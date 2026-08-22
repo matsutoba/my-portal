@@ -1,1 +1,4 @@
 @AGENTS.md
+@SPEC.md
+@ARCHITECTURE.md
+@CODING_RULES.md
