@@ -18,6 +18,8 @@ app/
       _components/            # そのfeature専用のコンポーネント（非ルーティング）
       _lib/                   # そのfeature専用のロジック（非ルーティング）
       ...                     # ページを複数持つfeatureはさらにネストしたルートを配置
+components/
+  ui/                         # プロジェクト共通のUIコンポーネントライブラリ（Button, Card等）
 server/
   go.mod
   cmd/api/main.go             # エントリポイント（Goの標準的なcmd/レイアウト）
@@ -28,6 +30,7 @@ server/
 - `app/features/<feature-slug>/`: featureごとに1つのポートフォリオアプリケーションを配置する。feature間の依存は持たせない
   - URLプレフィックス `/features/` はあえて残し、ポートフォリオ作品であることをURLで明示する（route groupで隠さない）
   - feature専用のコンポーネント・ロジックは `_components/` `_lib/` 等のprivate folder（アンダースコア接頭辞）としてfeatureフォルダ内にcolocateし、ルーティングに含めない
+- `components/ui/`: Tailwind CSS v4でスタイリングした共通UIコンポーネント（Button, Card等）を配置する。ポータルトップ・各featureはTailwindのユーティリティクラスを直接書くのではなく、原則としてここのコンポーネントを利用する。外部UIライブラリ（shadcn/ui等）は導入せず、自前のコンポーネントとして育てていく
 - `server/`: Go APIを配置する独立したGoモジュール。Next.js側とは依存を持たない
   - `PORT` 環境変数をリッスンする通常の`net/http`サーバー。Railwayにデプロイする
   - Railway側の設定: Root Directoryを `server` に設定し、Build/Startコマンドを明示する（`main.go`が`cmd/api/`配下にありRailwayの自動検出が効かないため）
