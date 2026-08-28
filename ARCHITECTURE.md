@@ -12,8 +12,8 @@
 ```
 app/
   page.tsx                    # ポータルトップ（feature一覧）
-  features/
-    <feature-slug>/           # 各ポートフォリオアプリケーション（URL: /features/<feature-slug>）
+  (features)/                 # route group。URLには出現しない
+    <feature-slug>/           # 各ポートフォリオアプリケーション（URL: /<feature-slug>）
       page.tsx
       _components/            # そのfeature専用のコンポーネント（非ルーティング）
       _lib/                   # そのfeature専用のロジック（非ルーティング）
@@ -26,9 +26,9 @@ server/
   ...
 ```
 
-- `app/page.tsx`: ポータルトップ。`features/` 配下の各featureへの導線を表示する
-- `app/features/<feature-slug>/`: featureごとに1つのポートフォリオアプリケーションを配置する。feature間の依存は持たせない
-  - URLプレフィックス `/features/` はあえて残し、ポートフォリオ作品であることをURLで明示する（route groupで隠さない）
+- `app/page.tsx`: ポータルトップ。`(features)/` 配下の各featureへの導線を表示する
+- `app/(features)/<feature-slug>/`: featureごとに1つのポートフォリオアプリケーションを配置する。feature間の依存は持たせない
+  - `(features)` はroute group（括弧付きフォルダ）とし、URLには `/features/` を出さない（例: `sample1` → `/sample1`）
   - feature専用のコンポーネント・ロジックは `_components/` `_lib/` 等のprivate folder（アンダースコア接頭辞）としてfeatureフォルダ内にcolocateし、ルーティングに含めない
 - `components/ui/`: Tailwind CSS v4でスタイリングした共通UIコンポーネント（Button, Card等）を配置する。ポータルトップ・各featureはTailwindのユーティリティクラスを直接書くのではなく、原則としてここのコンポーネントを利用する。外部UIライブラリ（shadcn/ui等）は導入せず、自前のコンポーネントとして育てていく
 - `server/`: Go APIを配置する独立したGoモジュール。Next.js側とは依存を持たない
