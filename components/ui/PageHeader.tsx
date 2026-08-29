@@ -22,9 +22,9 @@ export function PageHeader({
       )}
     >
       <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h2 className="text-2xl font-extrabold tracking-tight sm:text-2xl">
           {title}
-        </h1>
+        </h2>
         {description ? (
           <p className="text-sm text-muted-foreground">{description}</p>
         ) : null}
