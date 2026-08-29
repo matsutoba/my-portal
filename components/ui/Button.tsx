@@ -10,13 +10,13 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-foreground text-background hover:opacity-90 disabled:opacity-40",
+    "bg-foreground text-background hover:opacity-90 disabled:bg-neutral-bg disabled:text-muted-foreground disabled:opacity-100",
   secondary:
-    "border border-black/10 text-foreground disabled:text-foreground/40 dark:border-white/15",
+    "border border-border text-foreground disabled:text-muted-foreground",
 };
 
 const baseClasses =
-  "w-full rounded-md py-2 text-center text-sm font-medium transition-colors disabled:cursor-not-allowed";
+  "w-full rounded-lg py-2.5 text-center text-sm font-semibold transition-colors disabled:cursor-not-allowed";
 
 export function Button({
   variant = "primary",

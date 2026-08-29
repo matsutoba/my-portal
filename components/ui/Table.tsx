@@ -13,7 +13,7 @@ export function TableHeaderCell({ className, ...props }: ThHTMLAttributes<HTMLTa
   return (
     <th
       className={cn(
-        "border-b border-black/10 pb-3.5 text-left text-[13px] font-medium text-foreground/50 dark:border-white/15",
+        "border-b border-border pb-3.5 text-left text-[13px] font-medium text-muted-foreground",
         className,
       )}
       {...props}
@@ -23,7 +23,7 @@ export function TableHeaderCell({ className, ...props }: ThHTMLAttributes<HTMLTa
 
 export function TableRow({ className, ...props }: HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={cn("border-b border-black/5 last:border-b-0 dark:border-white/10", className)} {...props} />
+    <tr className={cn("border-b border-border/60 last:border-b-0", className)} {...props} />
   );
 }
 
