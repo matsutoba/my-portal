@@ -1,11 +1,16 @@
 import type { HTMLAttributes } from "react";
 import { cn } from "./cn";
 
-export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
+type CardProps = HTMLAttributes<HTMLDivElement> & {
+  highlighted?: boolean;
+};
+
+export function Card({ className, highlighted, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "flex flex-col justify-between gap-4 rounded-xl border border-black/10 p-6 dark:border-white/15",
+        "flex flex-col justify-between gap-4 rounded-xl border bg-card p-6 shadow-sm",
+        highlighted ? "border-2 border-accent shadow-md" : "border-border",
         className,
       )}
       {...props}
@@ -24,7 +29,7 @@ export function CardTitle({
   className,
   ...props
 }: HTMLAttributes<HTMLHeadingElement>) {
-  return <h2 className={cn("text-lg font-semibold", className)} {...props} />;
+  return <h2 className={cn("text-lg font-bold", className)} {...props} />;
 }
 
 export function CardDescription({
@@ -32,6 +37,6 @@ export function CardDescription({
   ...props
 }: HTMLAttributes<HTMLParagraphElement>) {
   return (
-    <p className={cn("text-sm text-foreground/70", className)} {...props} />
+    <p className={cn("text-sm text-muted-foreground", className)} {...props} />
   );
 }
