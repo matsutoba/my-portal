@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { ButtonHTMLAttributes, ReactNode } from "react";
+import Link from "next/link";
 import { cn } from "./cn";
 
 type ButtonVariant = "primary" | "secondary";
@@ -14,6 +15,9 @@ const variantClasses: Record<ButtonVariant, string> = {
     "border border-black/10 text-foreground disabled:text-foreground/40 dark:border-white/15",
 };
 
+const baseClasses =
+  "w-full rounded-md py-2 text-center text-sm font-medium transition-colors disabled:cursor-not-allowed";
+
 export function Button({
   variant = "primary",
   className,
@@ -21,12 +25,31 @@ export function Button({
 }: ButtonProps) {
   return (
     <button
-      className={cn(
-        "w-full rounded-md py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed",
-        variantClasses[variant],
-        className,
-      )}
+      className={cn(baseClasses, variantClasses[variant], className)}
       {...props}
     />
+  );
+}
+
+type LinkButtonProps = {
+  href: string;
+  variant?: ButtonVariant;
+  className?: string;
+  children: ReactNode;
+};
+
+export function LinkButton({
+  href,
+  variant = "primary",
+  className,
+  children,
+}: LinkButtonProps) {
+  return (
+    <Link
+      href={href}
+      className={cn(baseClasses, variantClasses[variant], className)}
+    >
+      {children}
+    </Link>
   );
 }
