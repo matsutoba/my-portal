@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { PageContainer } from "@/components/ui";
 import { cn } from "@/components/ui/cn";
 
@@ -29,7 +30,7 @@ export function SiteHeader() {
   return (
     <header className="border-b border-border bg-white shadow-sm">
       <PageContainer className="flex-none flex-row items-center justify-between gap-6 bg-white py-0">
-        <div className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <Image
             src="/images/codebeaver-icon.png"
             alt="Code Beaver"
@@ -40,7 +41,7 @@ export function SiteHeader() {
           <span className="text-sm font-bold tracking-wide uppercase">
             Code Beaver <span className="font-normal text-muted-foreground">{"// PORTAL"}</span>
           </span>
-        </div>
+        </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
