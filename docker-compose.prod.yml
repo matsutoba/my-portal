@@ -1,0 +1,87 @@
+# AWS Lightsail (Instance) 上でNext.js / Go API / MySQL / Caddyをまとめて動かす本番用構成。
+# ローカル開発用の docker-compose.yml（MySQLのみ）とは別ファイル。
+#
+# 使い方（Lightsail Instance上、リポジトリのルートで）:
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml build
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml run --rm migrate up
+#   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d mysql api web caddy
+#
+# migrateサービスは常時起動させたくないので、`up`の対象から明示的に外し、
+# 実行したいときだけ `run --rm migrate up|down` で呼び出す。
+#
+# .env.prod（git管理しない）に以下を定義する:
+#   DOMAIN=example.com
+#   MYSQL_ROOT_PASSWORD=...
+#   MYSQL_PASSWORD=...
+#   CRON_SECRET=...
+
+services:
+  mysql:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: my_portal
+      MYSQL_USER: app
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: ./server
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql://app:${MYSQL_PASSWORD}@tcp(mysql:3306)/my_portal
+      ALLOWED_ORIGIN: https://${DOMAIN}
+      CRON_SECRET: ${CRON_SECRET}
+      GIN_MODE: release
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # DBマイグレーション用。常時起動はさせず、必要なときだけ `run --rm migrate up|down` で叩く
+  migrate:
+    build:
+      context: ./server
+    entrypoint: ["/usr/local/bin/migrate"]
+    environment:
+      DATABASE_URL: mysql://app:${MYSQL_PASSWORD}@tcp(mysql:3306)/my_portal
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  web:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_BASE_URL: https://${DOMAIN}
+    restart: unless-stopped
+    depends_on:
+      - api
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - api
+
+volumes:
+  mysql_data:
+  caddy_data:
+  caddy_config:

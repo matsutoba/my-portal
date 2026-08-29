@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Dockerイメージに .next/standalone だけをコピーして動かすための出力形式
+  output: "standalone",
 };
 
 export default nextConfig;

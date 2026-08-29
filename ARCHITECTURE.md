@@ -4,8 +4,8 @@
 
 - フロントエンド: Next.js 16 (App Router) / TypeScript / React 19 / Tailwind CSS v4
 - API: Go / Gin（HTTPルーティング） / GORM（DBアクセス）
-- DB: Railway管理のMySQL。従量課金（Hobbyプランの月$5クレジット内に収まる想定）
-- デプロイ: Next.jsはVercel、Go APIとMySQLはRailway（同一Railwayプロジェクト内。APIからDBへはRailwayのプライベートネットワーク経由で接続し、外部公開しない）
+- DB: MySQL（Dockerコンテナ）
+- デプロイ: AWS Lightsail Instance（VPS）1台の上で、Next.js・Go API・MySQL・リバースプロキシ（Caddy）をDocker Composeでまとめて動かす。MySQLはコンテナの外に公開しない
 
 ## ディレクトリ構造（案）
 
@@ -55,10 +55,9 @@ server/
     - 外部API連携（`ndl/`, `openbd/`等）のように上記4層に収まらないものは自由なサブパッケージとしてよい
   - `internal/models/`: 全featureで共有するDBエンティティ（GORM struct）を置く。テーブルと1対1対応させ、`TableName()`でテーブル名を明示する
   - 複数featureで共有する処理（GORMのDB接続等）は`internal/db/`のようにfeature非依存の場所に置く
-  - `PORT` 環境変数をリッスンするGinサーバー。Railwayにデプロイする
-  - Railway側の設定: Root Directoryを `server` に設定し、Build/Startコマンドを明示する（`main.go`が`cmd/api/`配下にありRailwayの自動検出が効かないため）
-  - フロント（Vercel）とAPI（Railway）が別オリジンになるため、Go側でCORSを許可する（`ALLOWED_ORIGIN` 環境変数でフロントのオリジンを指定）
-  - Next.js側はfeatureのServer Component・Client Componentともに `NEXT_PUBLIC_API_BASE_URL` 環境変数（例: `.env.example`）でGo APIのベースURLを参照する。VercelとRailwayはプライベートネットワークを共有しないため、SSR時のサーバー間通信もブラウザからの呼び出しも同じ公開URLを使う
+  - `PORT` 環境変数をリッスンするGinサーバー。本番では `server/Dockerfile` でビルドしたコンテナとして動かす
+  - CaddyがNext.js（web）とGo API（api）を同じ公開ドメインの配下に集約する（`/api/*`・`/health` はapiへ、それ以外はwebへ）ため、Next.js・Go APIは同一オリジンになる。それでもGo側の`ALLOWED_ORIGIN`環境変数でCORS許可オリジンを明示する
+  - Next.js側はfeatureのServer Component・Client Componentともに `NEXT_PUBLIC_API_BASE_URL` 環境変数（例: `.env.example`）でGo APIのベースURLを参照する。同一オリジンの公開ドメインを指すため、SSR時のサーバー間通信もブラウザからの呼び出しも同じURLを使う
 
 ## DBマイグレーション
 
@@ -77,12 +76,23 @@ server/
 ## 主要な設計判断
 
 - feature一覧はコード内で静的に定義する（例: `features` 配列を1箇所で管理し、ポータルトップがそれを参照する）。ディレクトリの自動スキャンやCMS等の動的管理は行わない
-- フロント（Vercel）とAPI（Railway）を別プラットフォームに分離する。単一プラットフォームに統一する構成（Vercel Services）よりも一般的な実務構成に近いことを優先
+- Next.js・Go API・MySQLは単一のLightsail Instance上でDocker Composeによりまとめて動かす。マネージドサービス（Vercel/RDS等）に分散させるより、VPS1台の運用（Docker/Linux/リバースプロキシ/証明書更新）を経験することを優先
 - DBアクセスはGo API経由のみとし、Next.js側から直接DBには接続しない
 
 ## ローカル開発
 
 - MySQLは `docker-compose.yml` でコンテナ起動する（`docker compose up -d`）。ホストへのMySQLインストールは不要
 - Next.js・Goはどちらもコンテナ化せず、ホスト上でネイティブ実行する（`npm run dev` / `go run ./cmd/api`）。コード変更のたびにイメージを再ビルドする必要がなく開発サイクルが速いため
-- 接続情報（ユーザー: `app` / パスワード: `app` / DB名: `my_portal` / ポート: `3306`）は開発用の固定値。本番のRailway MySQLとは別物
+- 接続情報（ユーザー: `app` / パスワード: `app` / DB名: `my_portal` / ポート: `3306`）は開発用の固定値。本番の値とは別物
+
+## 本番デプロイ（AWS Lightsail）
+
+- 対象: Lightsail **Instance**（VPS）1台。Lightsail Container Serviceは使わない（MySQLをコンテナで動かし永続化したいため、ステートレス前提のマネージドコンテナサービスと相性が悪い）
+- 構成ファイル: リポジトリルートの `docker-compose.prod.yml`（ローカル開発用の`docker-compose.yml`とは別物）。`web`（Next.js）・`api`（Go）・`mysql`・`caddy`・`migrate`（一時実行専用）の5サービス
+  - `Dockerfile`（ルート、Next.js用）: `next.config.ts` の `output: "standalone"` を前提にした multi-stage build。`NEXT_PUBLIC_API_BASE_URL` はビルド時にJSへ埋め込まれるため、`docker compose build` 時にbuild argとして渡す
+  - `server/Dockerfile`: `api`・`migrate` 両方のバイナリを1つのイメージに含め、`docker-compose.prod.yml`側でどちらを起動するかを切り替える
+  - `Caddyfile`: 単一の公開ドメインで、`/api/*`・`/health` を`api`コンテナへ、それ以外を`web`コンテナへリバースプロキシする。Let's Encrypt証明書の取得・更新もCaddyが自動で行う
+- 環境変数は `.env.prod`（git管理しない、Lightsail Instance上にのみ置く）にまとめ、`docker compose --env-file .env.prod -f docker-compose.prod.yml ...` で読み込む（`DOMAIN` / `MYSQL_ROOT_PASSWORD` / `MYSQL_PASSWORD` / `CRON_SECRET`）
+- マイグレーションは常時起動サービスにせず、`docker compose --env-file .env.prod -f docker-compose.prod.yml run --rm migrate up` で都度実行する
+- Lightsail側の設定: Networkingタブで80/443番ポートを開放し、インスタンスの静的IPをドメインのAレコードに割り当てる（CaddyのHTTP-01検証に必要）
 

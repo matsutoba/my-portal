@@ -1,0 +1,9 @@
+node_modules
+.next
+.git
+server
+docker-compose*.yml
+Caddyfile
+*.md
+.env*
+!.env.example

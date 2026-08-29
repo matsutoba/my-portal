@@ -1,8 +1,8 @@
 import type { BookRow } from "./types";
 
-// Vercel (Next.js) and Railway (Go API) are separate platforms with no
-// shared private network, so both server- and client-side calls go through
-// this same public base URL.
+// Next.js and the Go API run in separate Docker containers, so both
+// server- and client-side calls go through this same public base URL
+// (Caddy reverse-proxies /api/* on that host to the api container).
 export function getApiBaseUrl(): string {
   return process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080";
 }
