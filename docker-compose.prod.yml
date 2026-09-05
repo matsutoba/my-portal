@@ -14,6 +14,17 @@
 #   MYSQL_ROOT_PASSWORD=...
 #   MYSQL_PASSWORD=...
 #   CRON_SECRET=...
+#
+# Lightsailインスタンスの（静的）IPアドレスが変わったときの手順:
+#   1. Lightsailコンソールでインスタンスの現在のパブリックIPを確認する
+#      （インスタンス上で `curl -4 ifconfig.me` でも確認できる）
+#   2. sslip.io等IPベースのドメインを使っている場合、.env.prod の DOMAIN を
+#      新しいIPに合わせて更新する（例: 1.2.3.4.sslip.io）
+#      独自ドメインを使っている場合は、DNSのAレコードを新しいIPに向ける
+#   3. Caddyを再作成して新しいドメインで証明書を取り直させる
+#        docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --force-recreate caddy
+#   4. ログで証明書取得が成功しているか確認する
+#        docker compose --env-file .env.prod -f docker-compose.prod.yml logs caddy --tail=30 -f
 
 services:
   mysql:
