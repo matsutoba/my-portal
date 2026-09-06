@@ -28,8 +28,8 @@ function LinkedInIcon() {
 
 export function SiteHeader() {
   return (
-    <header className="border-b border-border bg-white shadow-sm">
-      <PageContainer className="flex-none flex-row items-center justify-between gap-6 bg-white py-0">
+    <header className="border-b border-border bg-card shadow-sm">
+      <PageContainer className="flex-none flex-row items-center justify-between gap-6 bg-card py-0">
         <Link href="/" className="flex items-center gap-2.5">
           <Image
             src="/images/codebeaver-icon.png"
