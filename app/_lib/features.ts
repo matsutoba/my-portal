@@ -15,6 +15,13 @@ export const features: Feature[] = [
     status: "available",
   },
   {
+    slug: "shop-css",
+    name: "Antiqueshop Oude dagen",
+    description: "アンティークショップを想定した、HTML/CSSで制作した静的サイトのポートフォリオです。",
+    category: "STATIC SITE",
+    status: "available",
+  },
+  {
     slug: "feature-a",
     name: "Feature A",
     description: "準備中のポートフォリオアプリです。",
