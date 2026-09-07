@@ -1,0 +1,401 @@
+@charset "utf-8";
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+@import url(https://fonts.googleapis.com/css2?family=Lobster&display=swap);
+
+/* ---------------------------------
+   Common
+   移植元では `html { font-size: 62.5% }` を起点にした rem 指定だったが、
+   ポータル全体（Tailwindの rem ベースのユーティリティ）に影響しないよう、
+   ルート要素は書き換えずページ内を px に換算している。
+------------------------------------ */
+@font-face {
+  font-family: "Noto Sans JP";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Noto Sans CJK JP"),
+    url(https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Regular.woff2)
+      format("woff2"),
+    url(https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Regular.woff)
+      format("woff"),
+    url(https://fonts.gstatic.com/ea/notosansjp/v5/NotoSansJP-Regular.otf)
+      format("opentype");
+}
+
+.page {
+  color: #333;
+  font-size: 13px;
+  font-family: "メイリオ", "Meiryo", sans-serif;
+  font-feature-settings: "palt";
+  letter-spacing: 0.025em;
+}
+
+.page a {
+  text-decoration: none;
+}
+
+.page img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------------------------------
+   Util
+------------------------------------ */
+
+.inner {
+  margin: 0 48px;
+}
+
+.section-title {
+  font-family: "Montserrat", sans-serif;
+  margin-bottom: 48px;
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ---------------------------------
+   For PC
+------------------------------------ */
+
+/* ----------
+header
+---------- */
+.header {
+  position: relative;
+  width: 100%;
+}
+
+.header-bar {
+  background-color: #fff;
+  box-sizing: border-box;
+  padding: 24px 48px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.header-title {
+  font-family: "Lobster", cursive;
+  margin-bottom: 32px;
+  font-size: 32px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.header-menulist {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+.menuitem {
+  margin-right: 24px;
+}
+.menuitem:hover {
+  color: #d2691e;
+  transition: 0.4s;
+}
+.current {
+  color: #d2691e;
+}
+
+.menuitem:last-of-type {
+  margin-right: 0;
+}
+.eyecatch {
+  max-width: 1024px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  margin-bottom: 48px;
+}
+.eyecatch > img {
+  aspect-ratio: auto;
+  width: fit-content;
+}
+
+/* ----------
+main
+---------- */
+.main {
+  width: 100%;
+}
+.shopinfo {
+  background-color: rgb(241, 239, 234);
+  text-align: center;
+  margin-bottom: 48px;
+  padding: 48px 24px;
+}
+.shopinfo-text > p {
+  margin-bottom: 32px;
+}
+.shopinfo-text > p:last-of-type {
+  margin-bottom: 0;
+}
+
+.information {
+  display: flex;
+  flex-direction: row;
+
+  border: 1px solid #333;
+  padding: 24px;
+  margin: 0 96px 48px;
+}
+.information-title {
+  font-weight: bold;
+  margin-right: 16px;
+}
+.information-item {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 8px;
+}
+.information-item:last-of-type {
+  margin-bottom: 0;
+}
+.information-date {
+  margin-right: 16px;
+}
+.information-text > a {
+  color: #333;
+  text-decoration: underline;
+}
+.information-text > a:hover {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+.products {
+  margin-bottom: 96px;
+}
+.products-list {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.products-item {
+  position: relative;
+  width: 33.33%;
+  margin-right: 32px;
+}
+.products-item:last-of-type {
+  margin-right: 0;
+}
+.products-button {
+  position: absolute;
+  width: calc(100% / 2);
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  text-align: center;
+  font-size: 1.2em;
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+
+  border: 2px solid #fff;
+  padding: 16px;
+}
+.products-button:hover {
+  background-color: burlywood;
+  border-color: burlywood;
+  transition: all 0.3s;
+}
+
+.insta {
+  margin: 0 auto 48px;
+  padding: 48px 24px;
+  background-color: rgb(241, 239, 234);
+}
+.instagram {
+  margin: 0 auto 32px;
+  padding: 0 24px;
+}
+.insta-list {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  justify-content: center;
+  align-items: center;
+}
+.insta-item {
+  height: 120px;
+  aspect-ratio: auto;
+  object-fit: cover;
+  overflow: hidden;
+}
+.insta-item:hover {
+  filter: brightness(0.6);
+  transition: 0.4s;
+}
+
+.morebutton {
+  text-align: center;
+  border: 2px solid #333;
+  width: 90px;
+  padding: 10px;
+  margin: 0 auto;
+}
+.morebutton:hover {
+  color: #fff;
+  background-color: #333;
+  border-color: #333;
+}
+
+.access {
+  padding: 0 24px;
+  margin-bottom: 48px;
+}
+.access-info {
+  display: flex;
+  justify-content: center;
+}
+.access-map {
+  margin-right: 24px;
+}
+.access-text {
+  line-height: 2;
+}
+.access-text p span {
+  width: 100px;
+  margin-right: 16px;
+}
+
+.sns {
+  width: 100px;
+  margin: 0 auto 60px;
+}
+
+.sns-list {
+  display: flex;
+  justify-content: space-between;
+  font-size: 2em;
+}
+
+.sns-item {
+  margin-right: 24px;
+  color: #666;
+  cursor: pointer;
+}
+
+.sns-item:hover {
+  opacity: 0.5;
+}
+
+/* ----------
+footer
+---------- */
+
+.footer {
+  width: 100%;
+  height: 64px;
+  background-color: #333;
+}
+
+.footer-copyright {
+  font-size: 11px;
+  color: #fff;
+  padding-top: 24px;
+  text-align: center;
+}
+
+@media screen and (429px <= width < 960px) {
+  /* タブレット用 */
+  .header-bar {
+    flex-direction: column;
+  }
+  .header-title {
+    margin-bottom: 16px;
+  }
+
+  .information {
+    margin: 0 24px 48px;
+  }
+
+  .products-list {
+    flex-direction: column;
+  }
+  .products-item {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 16px;
+  }
+  .products-item:last-of-type {
+    margin: 0 auto;
+  }
+
+  .insta {
+    padding: 48px 24px;
+  }
+  .instagram {
+    width: 100%;
+  }
+  .insta-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .access {
+    padding: 0 24px;
+  }
+  .access-info {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+}
+
+@media screen and (width <= 428px) {
+  /* スマホ用 */
+  .header-bar {
+    flex-direction: column;
+  }
+  .header-title {
+    margin-bottom: 16px;
+  }
+
+  .information {
+    margin: 0 24px 48px;
+    flex-direction: column;
+  }
+  .information-title {
+    margin-bottom: 8px;
+  }
+
+  .products-list {
+    flex-direction: column;
+  }
+  .products-item {
+    width: 80%;
+    margin: 0 auto;
+    margin-bottom: 16px;
+  }
+  .products-item:last-of-type {
+    margin: 0 auto;
+  }
+
+  .insta {
+    padding: 48px 24px;
+  }
+  .instagram {
+    width: 100%;
+  }
+  .insta-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+  }
+
+  .access {
+    padding: 0 24px;
+  }
+  .access-info {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+  }
+}
