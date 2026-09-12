@@ -13,7 +13,7 @@ export function TableHeaderCell({ className, ...props }: ThHTMLAttributes<HTMLTa
   return (
     <th
       className={cn(
-        "border-b border-border pb-3.5 text-left text-[13px] font-medium text-muted-foreground",
+        "border-b border-border px-5 pt-5 pb-3.5 text-left text-[13px] font-medium text-muted-foreground",
         className,
       )}
       {...props}

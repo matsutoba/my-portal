@@ -15,6 +15,13 @@ export const features: Feature[] = [
     status: "available",
   },
   {
+    slug: "simple-ledger",
+    name: "複式簿記シンプル家計簿",
+    description: "複式簿記ベースの取引管理・分析ができるシンプルな家計簿アプリです。",
+    category: "LEDGER SYSTEM",
+    status: "available",
+  },
+  {
     slug: "shop-css",
     name: "Antiqueshop Oude dagen",
     description: "アンティークショップを想定した、HTML/CSSで制作した静的サイトのポートフォリオです。",
