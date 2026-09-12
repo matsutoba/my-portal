@@ -16,7 +16,7 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const baseClasses =
-  "w-full rounded-lg py-2.5 text-center text-sm font-semibold transition-colors disabled:cursor-not-allowed";
+  "w-full rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition-colors disabled:cursor-not-allowed";
 
 export function Button({
   variant = "primary",
