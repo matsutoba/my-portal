@@ -10,6 +10,10 @@
   --accent-foreground: #ffffff;
   --success: #16a34a;
   --success-bg: #dcfce7;
+  --danger: #dc2626;
+  --danger-bg: #fee2e2;
+  --warning: #b45309;
+  --warning-bg: #fef3c7;
   --neutral-bg: #f1f5f9;
   --dot-color: rgba(15, 23, 42, 0.08);
 }
@@ -24,6 +28,10 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
+  --color-danger: var(--danger);
+  --color-danger-bg: var(--danger-bg);
+  --color-warning: var(--warning);
+  --color-warning-bg: var(--warning-bg);
   --color-neutral-bg: var(--neutral-bg);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -40,6 +48,10 @@
     --accent-foreground: #0f172a;
     --success: #4ade80;
     --success-bg: rgba(74, 222, 128, 0.12);
+    --danger: #f87171;
+    --danger-bg: rgba(248, 113, 113, 0.12);
+    --warning: #fbbf24;
+    --warning-bg: rgba(251, 191, 36, 0.14);
     --neutral-bg: rgba(148, 163, 184, 0.1);
     --dot-color: rgba(226, 232, 240, 0.08);
   }

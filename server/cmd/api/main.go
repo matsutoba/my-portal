@@ -8,7 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/matsutoba/my-portal/server/internal/db"
-	"github.com/matsutoba/my-portal/server/internal/features/bookdatabase/router"
+	bookdatabaserouter "github.com/matsutoba/my-portal/server/internal/features/bookdatabase/router"
+	simpleledgerrouter "github.com/matsutoba/my-portal/server/internal/features/simpleledger/router"
 )
 
 func main() {
@@ -36,7 +37,8 @@ func main() {
 	engine.Use(corsMiddleware(allowedOrigin))
 
 	engine.GET("/health", handleHealth)
-	router.SetupBookRoutes(engine.Group("/api"), conn)
+	bookdatabaserouter.SetupBookRoutes(engine.Group("/api"), conn)
+	simpleledgerrouter.SetupSimpleLedgerRoutes(engine.Group("/api"), conn)
 
 	port := os.Getenv("PORT")
 	if port == "" {
