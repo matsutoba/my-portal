@@ -10,6 +10,7 @@ import (
 
 	"github.com/matsutoba/my-portal/server/internal/db"
 	bookdatabaserouter "github.com/matsutoba/my-portal/server/internal/features/bookdatabase/router"
+	simplecmsrouter "github.com/matsutoba/my-portal/server/internal/features/simplecms/router"
 	simpleledgerrouter "github.com/matsutoba/my-portal/server/internal/features/simpleledger/router"
 )
 
@@ -48,6 +49,7 @@ func main() {
 	engine.GET("/health", handleHealth)
 	bookdatabaserouter.SetupBookRoutes(engine.Group("/api"), conn)
 	simpleledgerrouter.SetupSimpleLedgerRoutes(engine.Group("/api"), conn)
+	simplecmsrouter.SetupSimpleCmsRoutes(engine.Group("/api"), conn)
 
 	port := os.Getenv("PORT")
 	if port == "" {
