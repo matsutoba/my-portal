@@ -1,13 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { PageContainer } from "@/components/ui";
 import { cn } from "@/components/ui/cn";
 
 const navItems = [
-  { label: "Dashboard", active: true },
-  { label: "Projects", active: false },
-  { label: "Technology Stack", active: false },
-  { label: "Profile", active: false },
+  { label: "Dashboard", href: "/" },
+  { label: "Projects", href: null },
+  { label: "Technology Stack", href: "/tech-stack" },
+  { label: "Profile", href: null },
 ];
 
 function GitHubIcon() {
@@ -27,6 +30,8 @@ function LinkedInIcon() {
 }
 
 export function SiteHeader() {
+  const pathname = usePathname();
+
   return (
     <header className="border-b border-border bg-card shadow-sm">
       <PageContainer className="flex-none flex-row items-center justify-between gap-6 bg-card py-0">
@@ -44,18 +49,29 @@ export function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <span
-              key={item.label}
-              className={cn(
-                "flex items-center gap-1.5 text-sm",
-                item.active ? "font-semibold text-accent" : "text-muted-foreground",
-              )}
-            >
-              {item.active ? <span className="size-1.5 rounded-full bg-accent" aria-hidden /> : null}
-              {item.label}
-            </span>
-          ))}
+          {navItems.map((item) => {
+            const active = item.href !== null && pathname === item.href;
+            const className = cn(
+              "flex items-center gap-1.5 text-sm",
+              active ? "font-semibold text-accent" : "text-muted-foreground",
+            );
+            const content = (
+              <>
+                {active ? <span className="size-1.5 rounded-full bg-accent" aria-hidden /> : null}
+                {item.label}
+              </>
+            );
+
+            return item.href ? (
+              <Link key={item.label} href={item.href} className={className}>
+                {content}
+              </Link>
+            ) : (
+              <span key={item.label} className={className}>
+                {content}
+              </span>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-2">
