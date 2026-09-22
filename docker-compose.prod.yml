@@ -1,13 +1,20 @@
 # AWS Lightsail (Instance) 上でNext.js / Go API / MySQL / Caddyをまとめて動かす本番用構成。
 # ローカル開発用の docker-compose.yml（MySQLのみ）とは別ファイル。
 #
-# 使い方（Lightsail Instance上、リポジトリのルートで）:
+# api/web は GitHub Actions（.github/workflows/deploy.yml）がビルドしてGHCRにpushした
+# イメージ（image:）を参照する。mainへのマージ後、CIが通ると自動でビルド・push・
+# Lightsailへのデプロイまで走る（`docker compose pull` → `run --rm migrate up` →
+# `up -d`）。手動で動かす／CIを使わない場合は build: が残っているのでそのままローカル
+# ビルドもできる:
 #   docker compose --env-file .env.prod -f docker-compose.prod.yml build
 #   docker compose --env-file .env.prod -f docker-compose.prod.yml run --rm migrate up
 #   docker compose --env-file .env.prod -f docker-compose.prod.yml up -d mysql api web caddy
 #
 # migrateサービスは常時起動させたくないので、`up`の対象から明示的に外し、
 # 実行したいときだけ `run --rm migrate up|down` で呼び出す。
+#
+# GHCRのパッケージ（ghcr.io/matsutoba/my-portal-web, -api）は初回push後に
+# Public に設定しておくこと（Lightsail側でdocker loginせずにpullできるようにするため）。
 #
 # .env.prod（git管理しない）に以下を定義する:
 #   DOMAIN=example.com
@@ -45,6 +52,7 @@ services:
       retries: 20
 
   api:
+    image: ghcr.io/matsutoba/my-portal-api:latest
     build:
       context: ./server
     restart: unless-stopped
@@ -60,6 +68,7 @@ services:
 
   # DBマイグレーション用。常時起動はさせず、必要なときだけ `run --rm migrate up|down` で叩く
   migrate:
+    image: ghcr.io/matsutoba/my-portal-api:latest
     build:
       context: ./server
     entrypoint: ["/usr/local/bin/migrate"]
@@ -70,6 +79,7 @@ services:
         condition: service_healthy
 
   web:
+    image: ghcr.io/matsutoba/my-portal-web:latest
     build:
       context: .
       args:
