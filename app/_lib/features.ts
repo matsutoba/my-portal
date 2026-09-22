@@ -4,6 +4,7 @@ export type Feature = {
   description: string;
   category: string;
   status: "available" | "coming-soon";
+  techStack: string[];
 };
 
 export const features: Feature[] = [
@@ -13,6 +14,7 @@ export const features: Feature[] = [
     description: "国立国会図書館サーチ・openBDから収集したIT関連書籍の一覧です。",
     category: "DATABASE SYSTEM",
     status: "available",
+    techStack: ["Next.js", "Go", "MySQL", "NDL Search API", "openBD API"],
   },
   {
     slug: "simple-ledger",
@@ -20,6 +22,7 @@ export const features: Feature[] = [
     description: "複式簿記ベースの取引管理・分析ができるシンプルな家計簿アプリです。",
     category: "LEDGER SYSTEM",
     status: "available",
+    techStack: ["Next.js", "Go", "MySQL"],
   },
   {
     slug: "shop-css",
@@ -27,6 +30,7 @@ export const features: Feature[] = [
     description: "アンティークショップを想定した、HTML/CSSで制作した静的サイトのポートフォリオです。",
     category: "STATIC SITE",
     status: "available",
+    techStack: ["HTML", "CSS"],
   },
   {
     slug: "feature-a",
@@ -34,6 +38,7 @@ export const features: Feature[] = [
     description: "準備中のポートフォリオアプリです。",
     category: "FEATURE MODULE",
     status: "coming-soon",
+    techStack: [],
   },
   {
     slug: "feature-b",
@@ -41,6 +46,7 @@ export const features: Feature[] = [
     description: "準備中のポートフォリオアプリです。",
     category: "FEATURE MODULE",
     status: "coming-soon",
+    techStack: [],
   },
   {
     slug: "feature-c",
@@ -48,5 +54,6 @@ export const features: Feature[] = [
     description: "準備中のポートフォリオアプリです。",
     category: "FEATURE MODULE",
     status: "coming-soon",
+    techStack: [],
   },
 ];
