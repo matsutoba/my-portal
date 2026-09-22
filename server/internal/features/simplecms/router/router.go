@@ -6,17 +6,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
+	"github.com/matsutoba/my-portal/server/internal/admin"
 	"github.com/matsutoba/my-portal/server/internal/features/simplecms/controller"
 	"github.com/matsutoba/my-portal/server/internal/features/simplecms/repository"
 	"github.com/matsutoba/my-portal/server/internal/features/simplecms/service"
 )
 
 // SetupSimpleCmsRoutes は simple cms feature のルートをapiGroup配下に
-// 登録する（例: GET /api/simple-cms/posts）。
-//
-// TODO: 更新・削除は本来オーナーのみが実行できるべきだが、管理者認証の設計は
-// 未着手。認証を実装するまでは他featureと同じくREAD_ONLY（本番）でのみ全操作
-// をブロックする状態になっている。
+// 登録する（例: GET /api/simple-cms/posts）。作成・更新・削除は
+// admin.AuthMiddleware（ポートフォリオ共通の管理者ログイン）で保護する。
 func SetupSimpleCmsRoutes(apiGroup *gin.RouterGroup, db *gorm.DB) {
 	categoryRepo := repository.NewCategoryRepository(db)
 	postRepo := repository.NewPostRepository(db)
@@ -27,23 +25,25 @@ func SetupSimpleCmsRoutes(apiGroup *gin.RouterGroup, db *gorm.DB) {
 	categoryCtrl := controller.NewCategoryController(categorySvc)
 	postCtrl := controller.NewPostController(postSvc)
 
+	adminAuth := admin.AuthMiddleware()
+
 	cms := apiGroup.Group("/simple-cms")
 	{
 		categories := cms.Group("/categories")
 		{
 			categories.GET("", categoryCtrl.List())
-			categories.POST("", categoryCtrl.Create())
-			categories.PUT("/:id", categoryCtrl.Update())
-			categories.DELETE("/:id", categoryCtrl.Delete())
+			categories.POST("", adminAuth, categoryCtrl.Create())
+			categories.PUT("/:id", adminAuth, categoryCtrl.Update())
+			categories.DELETE("/:id", adminAuth, categoryCtrl.Delete())
 		}
 
 		posts := cms.Group("/posts")
 		{
 			posts.GET("", postCtrl.List())
 			posts.GET("/:slug", postCtrl.GetBySlug())
-			posts.POST("", postCtrl.Create())
-			posts.PUT("/:id", postCtrl.Update())
-			posts.DELETE("/:id", postCtrl.Delete())
+			posts.POST("", adminAuth, postCtrl.Create())
+			posts.PUT("/:id", adminAuth, postCtrl.Update())
+			posts.DELETE("/:id", adminAuth, postCtrl.Delete())
 		}
 	}
 }
