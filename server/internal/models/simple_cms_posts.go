@@ -2,7 +2,7 @@ package models
 
 import "time"
 
-// Post: 簡易CMSの記事
+// Post: SimpleCMSの記事
 type Post struct {
 	ID         uint      `gorm:"column:id;primaryKey" json:"id"`
 	CategoryID uint      `gorm:"column:category_id;not null" json:"categoryId"`
