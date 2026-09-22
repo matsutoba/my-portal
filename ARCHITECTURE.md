@@ -104,12 +104,26 @@ server/
   echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
   ```
 
+## 管理者ログイン（ポートフォリオ共通）
+
+- 目的: 各featureは基本的に「誰でも編集・削除できる公開デモ」として作る方針だが、一部のfeature（例: `simple-cms`）は特定の操作を管理者（＝サイト運営者本人）限定にしたい。featureごとに認証を作らず、ポートフォリオ全体で共通の管理者ログインを1つ持ち、各featureはそれを参照するだけにする
+- 実装場所: `server/internal/admin/`（`internal/features/<feature-slug>/` の配下ではなく、`internal/db/` と同様のfeature非依存の共通処理として置く）
+  - `ADMIN_PASSWORD` 環境変数と照合し、一致すれば署名付きセッションCookie（`portal_admin_session`、HMAC署名・有効期限つき、DBには保存しないステートレスな方式）を発行する
+  - `POST /api/admin/login` / `POST /api/admin/logout` / `GET /api/admin/session` の3エンドポイントを `admin.RegisterRoutes` で登録する（`cmd/api/main.go` から呼ぶ）
+  - `admin.AuthMiddleware()` を各featureの管理者限定エンドポイントに付与する（例: `simple-cms` の記事・カテゴリの作成/更新/削除）
+- フロントエンド側: `app/login/`にポートフォリオ共通のログインページを置く（`app/(features)/`配下ではない。特定のfeatureに属さないため）
+  - `app/_lib/adminAuth.ts` の `checkIsAdmin()`（Server Component専用、Cookieを中継して`GET /api/admin/session`を叩く）を各featureのページ・レイアウトから呼び、管理者向けUIを出すかどうかを判断する
+  - `app/_lib/adminApi.ts` の `adminLogin` / `adminLogout`（Client Component用）
+  - ログインページは `?redirect=/<feature-slug>` を受け取り、ログイン成功後に元のfeatureへ戻す
+  - ポータル共通フッター（`app/_components/SiteFooter.tsx`）に `/login` への導線を常設する
+- 新しいfeatureで管理者限定の操作を追加する場合は、featureごとに認証を作らず、この共通の `admin.AuthMiddleware()` / `checkIsAdmin()` を再利用すること
+
 ## READ_ONLYモード（公開デモの書き込み保護）
 
 - 目的: 各featureは基本的に「誰でも編集・削除できる公開デモ」（例: `simple-ledger`）として作る方針のため、本番でシードデータやデモデータをいたずらに書き換えられたくない場合に、書き込み系エンドポイントだけを丸ごと止められるようにしている
 - 挙動: `server/cmd/api/main.go` の `readOnlyMiddleware` がGinのグローバルミドルウェアとして登録されている。`READ_ONLY=true`（`.env.prod`）のとき、`GET`/`HEAD`/`OPTIONS`以外の全リクエスト（`POST`/`PUT`/`PATCH`/`DELETE`）を、除外リストに載っているルートを除いて`403`＋`{"error": "..."}`で拒否する。未設定・`false`のときは通常どおり書き込みを許可する
 - **除外ルール**: `cmd/api/main.go` の `readOnlyMiddleware(readOnly, "/api/books/sync")` の第2引数以降が除外パスのリスト。あるエンドポイントを除外してよいかどうかは以下で判断する
-  - ✅ 除外してよい: ブラウザ経由でユーザーが直接叩けない（cronや管理者のみが`Authorization: Bearer <secret>`等の別の認可を使って呼ぶ）更新系エンドポイント。例: `/api/books/sync`（`CRON_SECRET`で保護された`CronAuthMiddleware`付き）
+  - ✅ 除外してよい: ブラウザ経由でユーザーが直接叩けない（cronや管理者のみが`Authorization: Bearer <secret>`等の別の認可を使って呼ぶ）更新系エンドポイント。例: `/api/books/sync`（`CRON_SECRET`で保護された`CronAuthMiddleware`付き）、`/api/admin/login`・`/api/admin/logout`と`simple-cms`の記事・カテゴリの作成/更新/削除（前述「管理者ログイン（ポートフォリオ共通）」の`admin.AuthMiddleware`付き）
   - ❌ 除外してはいけない: フロントエンドの画面操作（ボタンクリック等）から到達する、認可のない公開の書き込みエンドポイント。例: `simple-ledger`の取引作成・更新・削除
   - 新しいfeatureでcron専用・管理者専用の更新エンドポイントを追加した場合は、必ずそのエンドポイント自身にも認可（bearer tokenチェック等）を実装したうえで、`main.go`の除外リストに追記すること。認可を持たないエンドポイントを除外リストに入れてはいけない
 - ローカルでの動作確認:
