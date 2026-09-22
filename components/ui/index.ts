@@ -9,5 +9,6 @@ export { PageHeader } from "./PageHeader";
 export { Select } from "./Select";
 export { Table, TableHeaderCell, TableRow, TableCell } from "./Table";
 export { Textarea } from "./Textarea";
+export { TechTag } from "./TechTag";
 export { ToastProvider, useToast } from "./Toast";
 export { cn } from "./cn";

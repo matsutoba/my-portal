@@ -1,4 +1,13 @@
-import { Badge, Button, Card, CardDescription, CardHeader, CardTitle, LinkButton } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+  LinkButton,
+  TechTag,
+} from "@/components/ui";
 import { cn } from "@/components/ui/cn";
 import type { Feature } from "../_lib/features";
 
@@ -24,6 +33,13 @@ export function FeatureCard({ feature }: { feature: Feature }) {
         <CardTitle>{feature.name}</CardTitle>
         <CardDescription>{feature.description}</CardDescription>
       </CardHeader>
+      {feature.techStack.length > 0 ? (
+        <div className="flex flex-wrap gap-1.5">
+          {feature.techStack.map((tech) => (
+            <TechTag key={tech}>{tech}</TechTag>
+          ))}
+        </div>
+      ) : null}
       {isAvailable ? (
         <LinkButton href={`/${feature.slug}`}>起動 →</LinkButton>
       ) : (
