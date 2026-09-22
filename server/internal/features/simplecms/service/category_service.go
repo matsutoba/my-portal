@@ -33,6 +33,10 @@ func NewCategoryService(repo *repository.CategoryRepository) CategoryService {
 }
 
 func (s *categoryService) checkSlugAvailable(ctx context.Context, slug string, excludeID uint) error {
+	if err := validateSlugFormat(slug); err != nil {
+		return err
+	}
+
 	existing, err := s.repo.GetBySlug(ctx, slug)
 	if err != nil {
 		return err

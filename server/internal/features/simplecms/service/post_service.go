@@ -35,6 +35,10 @@ func NewPostService(postRepo *repository.PostRepository, categoryRepo *repositor
 }
 
 func (s *postService) validate(ctx context.Context, req *dto.PostRequest, excludePostID uint) error {
+	if err := validateSlugFormat(req.Slug); err != nil {
+		return err
+	}
+
 	category, err := s.categoryRepo.GetByID(ctx, req.CategoryID)
 	if err != nil {
 		return err

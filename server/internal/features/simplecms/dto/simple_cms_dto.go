@@ -11,7 +11,7 @@ import (
 // CategoryRequest はカテゴリの作成/更新リクエスト。
 type CategoryRequest struct {
 	Name string `json:"name" binding:"required,max=100"`
-	Slug string `json:"slug" binding:"required,max=100,alphanum"`
+	Slug string `json:"slug" binding:"required,max=100"`
 }
 
 // CategoryResponse はカテゴリ1件分。
@@ -30,7 +30,7 @@ type ListCategoriesResponse struct {
 type PostRequest struct {
 	CategoryID uint   `json:"categoryId" binding:"required"`
 	Title      string `json:"title" binding:"required,max=255"`
-	Slug       string `json:"slug" binding:"required,max=255,alphanum"`
+	Slug       string `json:"slug" binding:"required,max=255"`
 	Content    string `json:"content" binding:"required"`
 }
 
