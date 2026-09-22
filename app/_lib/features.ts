@@ -25,6 +25,14 @@ export const features: Feature[] = [
     techStack: ["Next.js", "Go", "MySQL"],
   },
   {
+    slug: "simple-cms",
+    name: "Simple CMS",
+    description: "カテゴリ分けとリッチテキスト編集ができる、シンプルな記事投稿・閲覧アプリです。",
+    category: "CMS",
+    status: "available",
+    techStack: ["Next.js", "Go", "MySQL", "Tiptap"],
+  },
+  {
     slug: "shop-css",
     name: "Antiqueshop Oude dagen",
     description: "アンティークショップを想定した、HTML/CSSで制作した静的サイトのポートフォリオです。",

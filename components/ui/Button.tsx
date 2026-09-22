@@ -36,6 +36,7 @@ type LinkButtonProps = {
   variant?: ButtonVariant;
   className?: string;
   children: ReactNode;
+  "aria-label"?: string;
 };
 
 export function LinkButton({
@@ -43,11 +44,13 @@ export function LinkButton({
   variant = "primary",
   className,
   children,
+  ...rest
 }: LinkButtonProps) {
   return (
     <Link
       href={href}
       className={cn(baseClasses, variantClasses[variant], className)}
+      {...rest}
     >
       {children}
     </Link>
