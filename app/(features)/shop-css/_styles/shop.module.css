@@ -22,6 +22,11 @@
 }
 
 .page {
+  /* ポータル側がダークモード（prefers-color-scheme）でCSS変数を切り替えても、
+     このfeatureはオリジナルデザインの配色を維持したいため、背景色を明示し
+     color-schemeをlightに固定してブラウザ標準のダーク適用を無効化する */
+  color-scheme: light;
+  background-color: #fff;
   color: #333;
   font-size: 13px;
   font-family: "メイリオ", "Meiryo", sans-serif;
