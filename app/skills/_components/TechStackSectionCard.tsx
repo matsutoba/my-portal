@@ -1,12 +1,10 @@
 import { Card, CardDescription, CardHeader, CardTitle, TechTag } from "@/components/ui";
-import type { TechStackSection } from "../_lib/sections";
+import type { TechStackSection } from "../_lib/techStack";
 
 export function TechStackSectionCard({ section }: { section: TechStackSection }) {
   return (
     <Card>
-      <span className="text-xs font-bold tracking-widest text-accent uppercase">
-        {section.category}
-      </span>
+      <span className="text-xs font-bold tracking-widest text-accent uppercase">{section.category}</span>
       <CardHeader>
         <CardTitle>{section.title}</CardTitle>
         <CardDescription>{section.description}</CardDescription>

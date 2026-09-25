@@ -40,28 +40,4 @@ export const features: Feature[] = [
     status: "available",
     techStack: ["HTML", "CSS"],
   },
-  {
-    slug: "feature-a",
-    name: "Feature A",
-    description: "準備中のポートフォリオアプリです。",
-    category: "FEATURE MODULE",
-    status: "coming-soon",
-    techStack: [],
-  },
-  {
-    slug: "feature-b",
-    name: "Feature B",
-    description: "準備中のポートフォリオアプリです。",
-    category: "FEATURE MODULE",
-    status: "coming-soon",
-    techStack: [],
-  },
-  {
-    slug: "feature-c",
-    name: "Feature C",
-    description: "準備中のポートフォリオアプリです。",
-    category: "FEATURE MODULE",
-    status: "coming-soon",
-    techStack: [],
-  },
 ];
