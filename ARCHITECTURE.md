@@ -118,6 +118,17 @@ server/
   - ポータル共通フッター（`app/_components/SiteFooter.tsx`）に `/login` への導線を常設する
 - 新しいfeatureで管理者限定の操作を追加する場合は、featureごとに認証を作らず、この共通の `admin.AuthMiddleware()` / `checkIsAdmin()` を再利用すること
 
+## CI/CD（GitHub Actions）
+
+- `.github/workflows/ci.yml`: `main`へのpush・PRで lint / build / go vet / go test を実行する
+- `.github/workflows/deploy.yml`: CIが`main`で成功したことを`workflow_run`で検知し、以下を自動実行する
+  1. ルートの`Dockerfile`（web）・`server/Dockerfile`（api）をビルドし、GHCR（`ghcr.io/matsutoba/my-portal-web` / `ghcr.io/matsutoba/my-portal-api`）に`latest`とコミットSHAタグでpush
+  2. GitHub ActionsからSSHでLightsailインスタンスに接続し、`git pull` → `docker compose pull` → `run --rm migrate up` → `up -d` を実行
+  - Lightsailインスタンス自身ではビルドを行わない（メモリが小さいVPSでのビルドによるOOM・デプロイ時間の増加を避けるため）。`docker-compose.prod.yml`の`api`/`web`は`image:`でGHCRのイメージを参照しつつ、`build:`も残しているため手動でのローカルビルドも可能
+  - GHCRのパッケージ（`my-portal-web` / `my-portal-api`）は初回push後に **Public** に設定しておく。Privateのままだと、Lightsail側で`docker login ghcr.io`が必要になる
+  - 必要なGitHub Secrets: `DOMAIN`（`NEXT_PUBLIC_API_BASE_URL`のビルド用。`.env.prod`の`DOMAIN`と同じ値）、`LIGHTSAIL_HOST` / `LIGHTSAIL_USER` / `LIGHTSAIL_SSH_KEY`（デプロイ用SSH接続情報）、`LIGHTSAIL_APP_DIR`（インスタンス上のリポジトリのパス）
+  - Lightsailインスタンス上には事前にリポジトリをclone済みで、GitHub Actionsの公開鍵に対応する秘密鍵を`LIGHTSAIL_SSH_KEY`に登録しておく必要がある（デプロイ専用ユーザー・専用鍵を推奨）
+
 ## READ_ONLYモード（公開デモの書き込み保護）
 
 - 目的: 各featureは基本的に「誰でも編集・削除できる公開デモ」（例: `simple-ledger`）として作る方針のため、本番でシードデータやデモデータをいたずらに書き換えられたくない場合に、書き込み系エンドポイントだけを丸ごと止められるようにしている
