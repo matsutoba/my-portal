@@ -8,6 +8,7 @@
   --card: #ffffff;
   --accent: #4f46e5;
   --accent-foreground: #ffffff;
+  --accent-bg: #eef2ff;
   --success: #16a34a;
   --success-bg: #dcfce7;
   --danger: #dc2626;
@@ -26,6 +27,7 @@
   --color-card: var(--card);
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-bg: var(--accent-bg);
   --color-success: var(--success);
   --color-success-bg: var(--success-bg);
   --color-danger: var(--danger);
@@ -46,6 +48,7 @@
     --card: #0b1120;
     --accent: #818cf8;
     --accent-foreground: #0f172a;
+    --accent-bg: rgba(129, 140, 248, 0.14);
     --success: #4ade80;
     --success-bg: rgba(74, 222, 128, 0.12);
     --danger: #f87171;

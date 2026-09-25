@@ -6,6 +6,12 @@ type PageHeaderProps = {
   description?: string;
   aside?: ReactNode;
   className?: string;
+  size?: "default" | "sm";
+};
+
+const titleSizeClasses: Record<NonNullable<PageHeaderProps["size"]>, string> = {
+  default: "text-2xl sm:text-3xl",
+  sm: "text-xl sm:text-2xl",
 };
 
 export function PageHeader({
@@ -13,6 +19,7 @@ export function PageHeader({
   description,
   aside,
   className,
+  size = "default",
 }: PageHeaderProps) {
   return (
     <header
@@ -22,7 +29,7 @@ export function PageHeader({
       )}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="text-2xl font-extrabold tracking-tight sm:text-2xl">
+        <h2 className={cn("font-extrabold tracking-tight", titleSizeClasses[size])}>
           {title}
         </h2>
         {description ? (

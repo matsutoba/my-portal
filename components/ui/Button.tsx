@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import Link from "next/link";
 import { cn } from "./cn";
 
-type ButtonVariant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" | "accent";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
@@ -12,7 +12,9 @@ const variantClasses: Record<ButtonVariant, string> = {
   primary:
     "bg-foreground text-background hover:opacity-90 disabled:bg-neutral-bg disabled:text-muted-foreground disabled:opacity-100",
   secondary:
-    "border border-border text-foreground disabled:text-muted-foreground",
+    "border border-border text-foreground hover:bg-neutral-bg disabled:text-muted-foreground disabled:hover:bg-transparent",
+  accent:
+    "bg-accent text-accent-foreground hover:opacity-90 disabled:bg-neutral-bg disabled:text-muted-foreground disabled:opacity-100",
 };
 
 const baseClasses =
@@ -37,6 +39,8 @@ type LinkButtonProps = {
   className?: string;
   children: ReactNode;
   "aria-label"?: string;
+  target?: string;
+  rel?: string;
 };
 
 export function LinkButton({
