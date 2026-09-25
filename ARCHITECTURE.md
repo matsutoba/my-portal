@@ -128,6 +128,12 @@ server/
   - GHCRのパッケージ（`my-portal-web` / `my-portal-api`）は初回push後に **Public** に設定しておく。Privateのままだと、Lightsail側で`docker login ghcr.io`が必要になる
   - 必要なGitHub Secrets: `DOMAIN`（`NEXT_PUBLIC_API_BASE_URL`のビルド用。`.env.prod`の`DOMAIN`と同じ値）、`LIGHTSAIL_HOST` / `LIGHTSAIL_USER` / `LIGHTSAIL_SSH_KEY`（デプロイ用SSH接続情報）、`LIGHTSAIL_APP_DIR`（インスタンス上のリポジトリのパス）
   - Lightsailインスタンス上には事前にリポジトリをclone済みで、GitHub Actionsの公開鍵に対応する秘密鍵を`LIGHTSAIL_SSH_KEY`に登録しておく必要がある（デプロイ専用ユーザー・専用鍵を推奨）
+- セットアップ時に詰まりやすい点:
+  - `.github/workflows/`配下を変更するコミットをHTTPSのPersonal Access Token（PAT）でpushすると、`refusing to allow a Personal Access Token to create or update workflow ... without \`workflow\` scope`で拒否される。PAT（classic）に`workflow`スコープを追加するか、fine-grained tokenなら`Workflows: Read and write`権限を付与して再発行する
+  - デプロイ用SSH鍵は専用に新規生成する（`ssh-keygen -t ed25519 -f ~/.ssh/my_portal_deploy -N ""`）。`LIGHTSAIL_SSH_KEY`には**秘密鍵**の中身（`.pub`ではない方）を設定する
+  - 公開鍵をLightsail側の`~/.ssh/authorized_keys`に追記する際、`echo "<公開鍵>" >> ~/.ssh/authorized_keys`を末尾に改行のないファイルに対して実行すると、既存の鍵と1行に連結されて両方とも壊れる（`ssh-keygen -lf ~/.ssh/authorized_keys`のフィンガープリントが想定と一致しない/型が化けるのが症状）。追記後は必ず`cat -A ~/.ssh/authorized_keys`等で1鍵1行になっているか確認する
+  - `~/.ssh`は`700`、`authorized_keys`は`600`、ホームディレクトリはグループ/他者に書き込み権限がないこと（sshdの`StrictModes`により、権限が緩いと鍵が一致していても黙って`Permission denied (publickey)`になる）
+  - 接続の切り分けには`ssh -v -i <秘密鍵> <user>@<host>`でローカルから直接SSHしてみて、GitHub Actions側の問題かサーバー側の鍵登録の問題かを先に特定するとよい
 
 ## READ_ONLYモード（公開デモの書き込み保護）
 
